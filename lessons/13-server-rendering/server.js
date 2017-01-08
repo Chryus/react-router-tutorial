@@ -1,25 +1,25 @@
-var express = require('express')
-var path = require('path')
-var compression = require('compression')
+import express from 'express'
+import path from 'path'
+import compression from 'compression'
 import React from 'react'
 // use this to render app to html string
 import { renderToString } from 'react-dom/server'
 // use these to match url to routes and render matching components
 import { match, RouterContext } from 'react-router'
-import { routes } from './modules/routes'
+import routes from './modules/routes'
 
 var app = express()
 
 app.use(compression())
 
 // serve our static stuff like index.css
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'public'), {index: false}))
 
 // send all requests to index.html so browserHistory works
-app.get('*', function (req, res) {
+app.get('*', (req, res) => {
 
   //match the routes to the url
-  match({ routes: routes, location: req.url }, (err, redirect, props) => {
+  match({ routes, location: req.url }, (err, redirect, props) => {
     // RouterContext is what the Router renders. Router keeps these
     // props in its state as it listens to browserHistory. But our app
     // is stateless on the server so we need to use match to get these
